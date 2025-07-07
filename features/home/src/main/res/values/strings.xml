@@ -4,8 +4,20 @@
 
     <string name="app_name">Rentals</string>
 
+    <!-- bottom bar values -->
     <string name="home">Home</string>
     <string name="favorite">Favorite</string>
     <string name="cart">Cart</string>
     <string name="profile">Profile</string>
+
+    <!-- see all -->
+    <string name="see_all">See All</string>
+
+
+    <!-- Rent By Gender values -->
+    <string name="gender_category">Rent By Gender</string>
+    <string name="man">Man</string>
+    <string name="woman">Women</string>
+    <string name="boy">Boy</string>
+    <string name="girl">Girl</string>
 </resources>

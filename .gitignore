@@ -15,5 +15,5 @@
 local.properties
 
 # Project exclude paths
-/features/home/build/
-/features/search/build/
+/feature/home/build/
+/feature/search/build/

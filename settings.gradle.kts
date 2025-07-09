@@ -23,5 +23,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Rentals"
 include(":app")
-include(":features:home")
-include(":features:search")
+include(":feature:home")
+include(":feature:search")
+include(":core:data")
+include(":core:model")

@@ -8,21 +8,26 @@
     <string name="home">Home</string>
     <string name="favorite">Favorite</string>
     <string name="cart">Cart</string>
+    <string name="calendar">Calendar</string>
     <string name="profile">Profile</string>
 
     <!-- see all -->
     <string name="see_all">See All</string>
 
 
-    <!-- Rent By Gender values -->
-    <string name="gender_category">Rent By Gender</string>
+    <!-- Choose By Gender values -->
+    <string name="gender_category">Choose By Gender</string>
 
-    <string-array name="gender_category_values">
-        <item>Man</item>
-        <item>Women</item>
-        <item>Boy</item>
-        <item>Girl</item>
-    </string-array>
+    <!-- Rent By favorite -->
+    <string name="favorite_category">Rent your Favorite</string>
+
+    <!--Occasion-->
+    <string name="occasion_category">Dressed for Every Celebration — Just Rent &amp; Shine!</string>
+
+
+
+
+    <string name="image_error_handle">Oops! Couldn\'t load image</string>
 
 
 </resources>

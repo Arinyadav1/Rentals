@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.vobot.rentals.core.data"
-    compileSdk = 35
+    compileSdk = 36
 }
 
 kotlin {
@@ -21,6 +21,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
 
     implementation(libs.koin.android)
+
+    api(projects.core.model)
 
 
 }

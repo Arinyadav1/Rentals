@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -24,26 +25,31 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
@@ -53,9 +59,9 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -67,7 +73,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -83,10 +88,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.request.CachePolicy
 import com.vobot.rentals.feature.home.R
@@ -104,7 +112,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier, homeViewModel: HomeViewModel = koinViewModel()
 ) {
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -117,6 +125,7 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 CenterAlignedTopAppBar(
+                    scrollBehavior = scrollBehavior,
                     windowInsets = WindowInsets.systemBars,
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background,
@@ -133,7 +142,9 @@ fun HomeScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
 
-                                IconButton(onClick = {}) {
+                                IconButton(
+                                    onClick = {},
+                                ) {
                                     Icon(
                                         Icons.Default.Menu, contentDescription = "menu"
                                     )
@@ -194,8 +205,9 @@ fun HomeScreen(
                                         .padding(start = 20.dp),
                                 ) {
                                     Text(
-                                        text = "Search", style = MaterialTheme.typography.bodyLarge
-                                        , color = colorResource(R.color.black)
+                                        text = "Search",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = colorResource(R.color.black)
                                     )
                                 }
                             }
@@ -221,6 +233,7 @@ fun HomeScreen(
             LazyColumn(
                 flingBehavior = ScrollableDefaults.flingBehavior()
             ) {
+
                 item {
                     Column(
                         modifier.fillMaxWidth(),
@@ -229,9 +242,14 @@ fun HomeScreen(
                     ) {
                         CarouselCard(modifier, homeViewModel)
 
-                        GenderRow(modifier)
+                        GenderRow(modifier, homeViewModel)
+
+                        Favorite(modifier, homeViewModel)
+
+                        Occasion(modifier, homeViewModel)
                     }
                 }
+
             }
 
         }
@@ -247,6 +265,7 @@ private fun BottomBar(modifier: Modifier) {
     val home by remember { mutableIntStateOf(R.string.home) }
     val favorite by remember { mutableIntStateOf(R.string.favorite) }
     val cart by remember { mutableIntStateOf(R.string.cart) }
+    val calendar by remember { mutableIntStateOf(R.string.calendar) }
     val profile by remember { mutableIntStateOf(R.string.profile) }
 
     var changeState by remember { mutableIntStateOf(home) }
@@ -274,9 +293,10 @@ private fun BottomBar(modifier: Modifier) {
     ) {
 
         Column(
+            modifier.padding(top = 5.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
 
             Box(
                 modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center
@@ -292,20 +312,11 @@ private fun BottomBar(modifier: Modifier) {
 
                     Column(
                         modifier.clickable(
-                            indication = null,
-                            interactionSource = interactionSource
+                            indication = null, interactionSource = interactionSource
                         ) {
                             changeState = home
-                        }
-                            .fillMaxWidth(.2f),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        }, horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
-                        HorizontalDivider(
-                            color = Color.Gray,
-                            thickness = 1.dp
-                        )
-
                         Icon(
                             imageVector = if (changeState == home) Icons.Filled.Home else Icons.Outlined.Home,
                             contentDescription = "home",
@@ -321,20 +332,11 @@ private fun BottomBar(modifier: Modifier) {
 
                     Column(
                         modifier.clickable(
-                            indication = null,
-                            interactionSource = interactionSource
+                            indication = null, interactionSource = interactionSource
                         ) {
                             changeState = favorite
-                        }
-                            .fillMaxWidth(.2f),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        }, horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
-                        HorizontalDivider(
-                            color = Color.Gray,
-                            thickness = 1.dp
-                        )
-
                         Icon(
                             imageVector = if (changeState == favorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                             contentDescription = "favorite",
@@ -350,19 +352,11 @@ private fun BottomBar(modifier: Modifier) {
 
                     Column(
                         modifier.clickable(
-                            indication = null,
-                            interactionSource = interactionSource
+                            indication = null, interactionSource = interactionSource
                         ) {
                             changeState = cart
-                        }
-                            .fillMaxWidth(.2f),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        }, horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
-                        HorizontalDivider(
-                            color = Color.Gray,
-                            thickness = 1.dp
-                        )
 
                         Icon(
                             imageVector = if (changeState == cart) Icons.Filled.ShoppingCart else Icons.Outlined.ShoppingCart,
@@ -379,19 +373,33 @@ private fun BottomBar(modifier: Modifier) {
 
                     Column(
                         modifier.clickable(
-                            indication = null,
-                            interactionSource = interactionSource
+                            indication = null, interactionSource = interactionSource
                         ) {
-                            changeState = profile
-                        }
-                            .fillMaxWidth(.2f),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            changeState = calendar
+                        }, horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        HorizontalDivider(
-                            color = Color.Gray,
-                            thickness = 1.dp
+                        Icon(
+                            imageVector = if (changeState == calendar) Icons.Filled.DateRange else Icons.Outlined.DateRange,
+                            contentDescription = "calendar",
+                            tint = if (changeState == calendar) changingColor else stableColor
+
                         )
+
+                        Text(
+                            text = stringResource(R.string.calendar),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (changeState == calendar) changingColor else stableColor
+                        )
+                    }
+
+                    Column(
+                        modifier.clickable(
+                            indication = null, interactionSource = interactionSource
+                        ) {
+                            changeState = profile
+                        }, horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
                         Icon(
                             imageVector = if (changeState == profile) Icons.Filled.Person else Icons.Outlined.Person,
@@ -490,6 +498,31 @@ private fun CarouselCard(modifier: Modifier, homeViewModel: HomeViewModel) {
 
             SubcomposeAsyncImage(
                 model = images[page % images.size],
+                loading = {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
+                        )
+                    }
+                },
+                error = {
+
+                    Box(
+                        modifier = Modifier.fillMaxSize(.9f),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.image_error_handle),
+                            style = MaterialTheme.typography.labelSmall,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                },
                 contentDescription = "image",
                 imageLoader = imageLoader,
                 contentScale = ContentScale.FillBounds,
@@ -522,13 +555,16 @@ private fun CarouselCard(modifier: Modifier, homeViewModel: HomeViewModel) {
 
 
 @Composable
-fun GenderRow(modifier: Modifier) {
+fun GenderRow(modifier: Modifier, homeViewModel: HomeViewModel) {
+
+    val genderImages by homeViewModel.genderImageState.collectAsState()
 
     val context = LocalContext.current
-    val gendersValue = context.resources.getStringArray(R.array.gender_category_values).toList()
 
     Column(
-        modifier.fillMaxWidth(.95f),
+        modifier
+            .fillMaxWidth(.95f)
+            .padding(top = 5.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -543,14 +579,112 @@ fun GenderRow(modifier: Modifier) {
             )
             Text(
                 text = stringResource(R.string.see_all),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.bodySmall
             )
         }
 
         LazyRow(
-            modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
+            modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+
         ) {
-            items(gendersValue) { it ->
+            items(genderImages) { it ->
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ElevatedCard(
+                        modifier
+                            .padding(5.dp)
+                            .size(height = 100.dp, width = 100.dp)
+                    ) {
+
+                        val imageLoader =
+                            ImageLoader.Builder(context).crossfade(true)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .build()
+
+                        SubcomposeAsyncImage(
+                            model = it.image,
+                            loading = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        strokeWidth = 2.dp
+                                    )
+                                }
+                            },
+                            error = {
+
+                                Box(
+                                    modifier = Modifier.fillMaxSize(.9f),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.image_error_handle),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+
+                            },
+                            contentDescription = "genderImage",
+                            imageLoader = imageLoader,
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+
+                    }
+
+                    Text(
+                        text = it.gender, style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun Favorite(modifier: Modifier, homeViewModel: HomeViewModel) {
+
+    val favoriteImages by homeViewModel.favoriteImageState.collectAsState()
+
+    val context = LocalContext.current
+
+    Column(
+        modifier
+            .fillMaxWidth(.95f)
+            .padding(top = 20.dp, bottom = 20.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier.fillMaxWidth(.97f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.favorite_category),
+                style = MaterialTheme.typography.labelLarge
+            )
+            Text(
+                text = stringResource(R.string.see_all),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
+        LazyRow(
+            modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+
+        ) {
+            items(favoriteImages) { it ->
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -561,14 +695,156 @@ fun GenderRow(modifier: Modifier) {
                             .size(height = 160.dp, width = 130.dp)
                     ) {
 
+                        val imageLoader =
+                            ImageLoader.Builder(context).crossfade(true)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .build()
+
+                        SubcomposeAsyncImage(
+                            model = it.image,
+                            loading = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        strokeWidth = 2.dp
+                                    )
+                                }
+                            },
+                            error = {
+
+                                Box(
+                                    modifier = Modifier.fillMaxSize(.9f),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.image_error_handle),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+
+                            },
+                            contentDescription = "genderImage",
+                            imageLoader = imageLoader,
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+
                     }
 
                     Text(
-                        text = it, style = MaterialTheme.typography.labelMedium
+                        text = it.name, style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
         }
+    }
+}
+
+
+@SuppressLint("ConfigurationScreenWidthHeight")
+@RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+@Composable
+fun Occasion(modifier: Modifier, homeViewModel: HomeViewModel) {
+
+    val favoriteImages by homeViewModel.favoriteImageState.collectAsState()
+
+    val context = LocalContext.current
+
+    Column(
+        modifier
+            .fillMaxWidth(.95f)
+            .clip(RoundedCornerShape(10.dp))
+            .background(colorResource(R.color.white))
+            .padding(top = 10.dp)
+            .heightIn(max = 2000.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+
+        Box(
+            modifier.fillMaxWidth(.9f),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.occasion_category),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = modifier.padding(bottom = 7.dp)
+            )
+        }
+
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(100.dp),
+
+            userScrollEnabled = false,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            contentPadding = PaddingValues(8.dp),
+        ) {
+            items(9) { it ->
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    ElevatedCard(
+                        modifier
+                            .padding(5.dp)
+                            .size(100.dp)
+                    ) {
+
+                        val imageLoader =
+                            ImageLoader.Builder(context).crossfade(true)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .build()
+
+                        SubcomposeAsyncImage(
+                            model = "",
+                            loading = {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        strokeWidth = 2.dp
+                                    )
+                                }
+                            },
+                            error = {
+
+                                Box(
+                                    modifier = Modifier.fillMaxSize(.9f),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.image_error_handle),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+
+                            },
+                            contentDescription = "genderImage",
+                            imageLoader = imageLoader,
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+
+                    }
+
+                    Text(
+                        text = "Occasion", style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        }
+
     }
 }
 

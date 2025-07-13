@@ -1,13 +1,19 @@
 package com.vobot.rentals.feature.home.viewModel
 
 import androidx.lifecycle.ViewModel
-import com.vobot.rentals.core.data.repository.CarouselImageRepository
+import com.vobot.rentals.core.data.repository.ImagesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class HomeViewModel(private  val carouselImageRepositoryImpl: CarouselImageRepository) : ViewModel() {
-    private val _carouselImageState = MutableStateFlow(carouselImageRepositoryImpl.showCarosalImage)
+class HomeViewModel(imagesRepositoryImpl: ImagesRepository) : ViewModel() {
+    private val _carouselImageState = MutableStateFlow(imagesRepositoryImpl.showCarousalImage)
     val carouselImageState = _carouselImageState.asStateFlow()
+
+    private val _genderImageState = MutableStateFlow(imagesRepositoryImpl.genderImage)
+    val genderImageState = _genderImageState.asStateFlow()
+
+    private val _favoriteImageState = MutableStateFlow(imagesRepositoryImpl.favoriteImage)
+    val favoriteImageState = _favoriteImageState.asStateFlow()
 
 
 }

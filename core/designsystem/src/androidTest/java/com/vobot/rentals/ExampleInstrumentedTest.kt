@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.vobot.rentals", appContext.packageName)
+        assertEquals("com.vobot.designsystem.test", appContext.packageName)
     }
 }

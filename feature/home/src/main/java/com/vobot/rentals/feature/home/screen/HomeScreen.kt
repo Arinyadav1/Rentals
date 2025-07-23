@@ -1,4 +1,4 @@
-package com.vobot.rentals.features.home.screen
+package com.vobot.rentals.feature.home.screen
 
 
 import android.annotation.SuppressLint
@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -30,8 +29,8 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -57,6 +56,9 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.BottomAppBarScrollBehavior
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -93,8 +95,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.request.CachePolicy
 import com.vobot.rentals.feature.home.R
@@ -106,32 +106,39 @@ import kotlin.math.absoluteValue
 
 @RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier, homeViewModel: HomeViewModel = koinViewModel()
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = koinViewModel(),
 ) {
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehaviorTop = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    val materialColor = MaterialTheme.colorScheme
+
     Scaffold(
         modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .nestedScroll(scrollBehaviorTop.nestedScrollConnection)
             .windowInsetsPadding(WindowInsets.navigationBars),
+        containerColor = materialColor.surfaceBright,
+        contentColor = materialColor.onSurface,
 
         topBar = {
             Column(
-                modifier.fillMaxWidth(),
+                modifier.fillMaxWidth().background(materialColor.primary),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 CenterAlignedTopAppBar(
-                    scrollBehavior = scrollBehavior,
+                    scrollBehavior = scrollBehaviorTop,
                     windowInsets = WindowInsets.systemBars,
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                        containerColor = materialColor.primary,
+                        titleContentColor = materialColor.onPrimary,
+                        scrolledContainerColor = materialColor.primary
                     ),
                     title = {
+
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -153,7 +160,7 @@ fun HomeScreen(
                                 Text(
                                     text = stringResource(R.string.app_name),
                                     style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = materialColor.onPrimary
                                 )
 
                                 IconButton(onClick = {}) {
@@ -164,57 +171,9 @@ fun HomeScreen(
                                 }
                             }
                         }
-                    })
-
-                Box(
-                    modifier.padding(top = 10.dp), contentAlignment = Alignment.Center
-                ) {
-                    ElevatedCard(
-                        modifier
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }) {}
-                            .fillMaxWidth(.87f)
-                            .height(48.dp)
-                            .padding(bottom = 10.dp)
-                            .border(.0.dp, Color.Gray, CircleShape),
-                        colors = CardDefaults.cardColors(colorResource(R.color.white)),
-                        shape = CircleShape,
-                        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)) {
-                        Box(
-                            modifier
-                                .fillMaxSize()
-                                .padding(start = 13.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Row(
-                                modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-
-                                Icon(
-                                    Icons.Outlined.Search,
-                                    contentDescription = "search",
-                                    tint = colorResource(R.color.black)
-                                )
-
-
-                                Box(
-                                    modifier
-                                        .fillMaxWidth()
-                                        .padding(start = 20.dp),
-                                ) {
-                                    Text(
-                                        text = "Search",
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = colorResource(R.color.black)
-                                    )
-                                }
-                            }
-
-                        }
                     }
-                }
+                )
+                SearchBar(modifier)
             }
         },
 
@@ -251,14 +210,72 @@ fun HomeScreen(
                 }
 
             }
-
         }
     }
 }
 
 
 @Composable
+internal fun SearchBar(modifier: Modifier) {
+
+    val materialColor = MaterialTheme.colorScheme
+
+    Box(
+         contentAlignment = Alignment.Center
+    ) {
+        ElevatedCard(
+            modifier
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }) {}
+                .fillMaxWidth(.87f)
+                .height(48.dp)
+                .padding(bottom = 10.dp)
+                .border(.0.dp, Color.Gray, CircleShape),
+            colors = CardDefaults.cardColors(materialColor.surfaceBright),
+            shape = CircleShape,
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)) {
+            Box(
+                modifier
+                    .fillMaxSize()
+                    .padding(start = 13.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Row(
+                    modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+
+                    Icon(
+                        Icons.Outlined.Search,
+                        contentDescription = "search",
+                        tint = materialColor.onSurface
+                    )
+
+
+                    Box(
+                        modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp),
+                    ) {
+                        Text(
+                            text = "Search",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = materialColor.onSurface
+                        )
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun BottomBar(modifier: Modifier) {
+
+    val materialColor = MaterialTheme.colorScheme
 
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -270,9 +287,8 @@ private fun BottomBar(modifier: Modifier) {
 
     var changeState by remember { mutableIntStateOf(home) }
 
-    val stableColor = colorResource(R.color.black)
-    val changingColor = colorResource(R.color.light_pink)
-
+//    val stableColor = colorResource(R.color.black)
+//    val changingColor = colorResource(R.color.black)
 
     BottomAppBar(
         modifier = modifier
@@ -281,14 +297,15 @@ private fun BottomBar(modifier: Modifier) {
             .drawBehind {
                 val strokeWidth = 1.dp.toPx()
                 drawLine(
-                    color = Color.Gray,
+                    color = materialColor.outlineVariant,
                     start = Offset(0f, 0f),
                     end = Offset(size.width, 0f),
                     strokeWidth = strokeWidth
                 )
             },
         contentPadding = PaddingValues(0.dp),
-        containerColor = colorResource(R.color.white),
+        containerColor = materialColor.surfaceContainerLow,
+        contentColor = materialColor.onSurface,
         tonalElevation = 10.dp,
     ) {
 
@@ -320,13 +337,13 @@ private fun BottomBar(modifier: Modifier) {
                         Icon(
                             imageVector = if (changeState == home) Icons.Filled.Home else Icons.Outlined.Home,
                             contentDescription = "home",
-                            tint = if (changeState == home) changingColor else stableColor
+                            tint = materialColor.onSurface
                         )
 
                         Text(
                             text = stringResource(home),
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (changeState == home) changingColor else stableColor
+                            color = materialColor.onSurface
                         )
                     }
 
@@ -340,13 +357,13 @@ private fun BottomBar(modifier: Modifier) {
                         Icon(
                             imageVector = if (changeState == favorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                             contentDescription = "favorite",
-                            tint = if (changeState == favorite) changingColor else stableColor
+                            tint = materialColor.onSurface
                         )
 
                         Text(
                             text = stringResource(favorite),
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (changeState == favorite) changingColor else stableColor
+                            color = materialColor.onSurface
                         )
                     }
 
@@ -361,13 +378,13 @@ private fun BottomBar(modifier: Modifier) {
                         Icon(
                             imageVector = if (changeState == cart) Icons.Filled.ShoppingCart else Icons.Outlined.ShoppingCart,
                             contentDescription = "cart",
-                            tint = if (changeState == cart) changingColor else stableColor
+                            tint = materialColor.onSurface
                         )
 
                         Text(
                             text = stringResource(cart),
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (changeState == cart) changingColor else stableColor
+                            color = materialColor.onSurface
                         )
                     }
 
@@ -382,14 +399,14 @@ private fun BottomBar(modifier: Modifier) {
                         Icon(
                             imageVector = if (changeState == calendar) Icons.Filled.DateRange else Icons.Outlined.DateRange,
                             contentDescription = "calendar",
-                            tint = if (changeState == calendar) changingColor else stableColor
+                            tint = materialColor.onSurface
 
                         )
 
                         Text(
                             text = stringResource(R.string.calendar),
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (changeState == calendar) changingColor else stableColor
+                            color = materialColor.onSurface
                         )
                     }
 
@@ -404,17 +421,16 @@ private fun BottomBar(modifier: Modifier) {
                         Icon(
                             imageVector = if (changeState == profile) Icons.Filled.Person else Icons.Outlined.Person,
                             contentDescription = "profile",
-                            tint = if (changeState == profile) changingColor else stableColor
+                            tint = materialColor.onSurface
 
                         )
 
                         Text(
                             text = stringResource(R.string.profile),
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (changeState == profile) changingColor else stableColor
+                            color = materialColor.onSurface
                         )
                     }
-
                 }
             }
         }
@@ -458,7 +474,7 @@ private fun CarouselCard(modifier: Modifier, homeViewModel: HomeViewModel) {
     HorizontalPager(
         state = pagerState,
         pageSpacing = (-35).dp,
-        contentPadding = PaddingValues(horizontal = 30.dp),
+        contentPadding = PaddingValues(start = 30.dp, end = 30.dp, top = 10.dp),
 
         ) { page ->
 
@@ -504,8 +520,7 @@ private fun CarouselCard(modifier: Modifier, homeViewModel: HomeViewModel) {
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp
+                            modifier = Modifier.size(20.dp), strokeWidth = 2.dp
                         )
                     }
                 },
@@ -578,14 +593,12 @@ fun GenderRow(modifier: Modifier, homeViewModel: HomeViewModel) {
                 style = MaterialTheme.typography.labelLarge
             )
             Text(
-                text = stringResource(R.string.see_all),
-                style = MaterialTheme.typography.bodySmall
+                text = stringResource(R.string.see_all), style = MaterialTheme.typography.bodySmall
             )
         }
 
         LazyRow(
-            modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
 
         ) {
             items(genderImages) { it ->
@@ -599,10 +612,8 @@ fun GenderRow(modifier: Modifier, homeViewModel: HomeViewModel) {
                             .size(height = 100.dp, width = 100.dp)
                     ) {
 
-                        val imageLoader =
-                            ImageLoader.Builder(context).crossfade(true)
-                                .diskCachePolicy(CachePolicy.ENABLED)
-                                .build()
+                        val imageLoader = ImageLoader.Builder(context).crossfade(true)
+                            .diskCachePolicy(CachePolicy.ENABLED).build()
 
                         SubcomposeAsyncImage(
                             model = it.image,
@@ -612,8 +623,7 @@ fun GenderRow(modifier: Modifier, homeViewModel: HomeViewModel) {
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     CircularProgressIndicator(
-                                        modifier = Modifier.size(20.dp),
-                                        strokeWidth = 2.dp
+                                        modifier = Modifier.size(20.dp), strokeWidth = 2.dp
                                     )
                                 }
                             },
@@ -634,8 +644,7 @@ fun GenderRow(modifier: Modifier, homeViewModel: HomeViewModel) {
                             contentDescription = "genderImage",
                             imageLoader = imageLoader,
                             contentScale = ContentScale.FillBounds,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         )
 
                     }
@@ -674,14 +683,12 @@ fun Favorite(modifier: Modifier, homeViewModel: HomeViewModel) {
                 style = MaterialTheme.typography.labelLarge
             )
             Text(
-                text = stringResource(R.string.see_all),
-                style = MaterialTheme.typography.bodySmall
+                text = stringResource(R.string.see_all), style = MaterialTheme.typography.bodySmall
             )
         }
 
         LazyRow(
-            modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
 
         ) {
             items(favoriteImages) { it ->
@@ -695,10 +702,8 @@ fun Favorite(modifier: Modifier, homeViewModel: HomeViewModel) {
                             .size(height = 160.dp, width = 130.dp)
                     ) {
 
-                        val imageLoader =
-                            ImageLoader.Builder(context).crossfade(true)
-                                .diskCachePolicy(CachePolicy.ENABLED)
-                                .build()
+                        val imageLoader = ImageLoader.Builder(context).crossfade(true)
+                            .diskCachePolicy(CachePolicy.ENABLED).build()
 
                         SubcomposeAsyncImage(
                             model = it.image,
@@ -708,8 +713,7 @@ fun Favorite(modifier: Modifier, homeViewModel: HomeViewModel) {
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     CircularProgressIndicator(
-                                        modifier = Modifier.size(20.dp),
-                                        strokeWidth = 2.dp
+                                        modifier = Modifier.size(20.dp), strokeWidth = 2.dp
                                     )
                                 }
                             },
@@ -730,8 +734,7 @@ fun Favorite(modifier: Modifier, homeViewModel: HomeViewModel) {
                             contentDescription = "genderImage",
                             imageLoader = imageLoader,
                             contentScale = ContentScale.FillBounds,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         )
 
                     }
@@ -751,100 +754,101 @@ fun Favorite(modifier: Modifier, homeViewModel: HomeViewModel) {
 @Composable
 fun Occasion(modifier: Modifier, homeViewModel: HomeViewModel) {
 
-    val favoriteImages by homeViewModel.favoriteImageState.collectAsState()
+    val occasion by homeViewModel.occasionState.collectAsState()
 
     val context = LocalContext.current
 
-    Column(
-        modifier
-            .fillMaxWidth(.95f)
-            .clip(RoundedCornerShape(10.dp))
-            .background(colorResource(R.color.white))
-            .padding(top = 10.dp)
-            .heightIn(max = 2000.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    val materialColor = MaterialTheme.colorScheme
+
+    ElevatedCard(
+        modifier = modifier.padding(bottom = 10.dp),
+        colors = CardDefaults.elevatedCardColors(materialColor.primaryContainer),
+
     ) {
-
-
-        Box(
-            modifier.fillMaxWidth(.9f),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier
+                .fillMaxWidth(.95f)
+                .clip(RoundedCornerShape(10.dp))
+                .padding(top = 10.dp)
+                .heightIn(max = 2000.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = stringResource(R.string.occasion_category),
-                style = MaterialTheme.typography.labelLarge,
-                modifier = modifier.padding(bottom = 7.dp)
-            )
-        }
+            Box(
+                modifier.fillMaxWidth(.9f), contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.occasion_category),
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = modifier.padding(bottom = 7.dp)
+                )
+            }
 
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(100.dp),
-
-            userScrollEnabled = false,
-            verticalArrangement = Arrangement.SpaceEvenly,
-            contentPadding = PaddingValues(8.dp),
-        ) {
-            items(9) { it ->
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    ElevatedCard(
-                        modifier
-                            .padding(5.dp)
-                            .size(100.dp)
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(100.dp),
+                userScrollEnabled = false,
+                verticalArrangement = Arrangement.SpaceEvenly,
+                contentPadding = PaddingValues(8.dp),
+            ) {
+                items(occasion) { it ->
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        val imageLoader =
-                            ImageLoader.Builder(context).crossfade(true)
-                                .diskCachePolicy(CachePolicy.ENABLED)
-                                .build()
+                        Card(
+                            modifier
+                                .padding(5.dp)
+                                .size(100.dp)
+                        ) {
 
-                        SubcomposeAsyncImage(
-                            model = "",
-                            loading = {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(20.dp),
-                                        strokeWidth = 2.dp
-                                    )
-                                }
-                            },
-                            error = {
+                            val imageLoader = ImageLoader.Builder(context).crossfade(true)
+                                .diskCachePolicy(CachePolicy.ENABLED).build()
 
-                                Box(
-                                    modifier = Modifier.fillMaxSize(.9f),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.image_error_handle),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
+                            SubcomposeAsyncImage(
+                                model = it.image,
+                                loading = {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(20.dp), strokeWidth = 2.dp
+                                        )
+                                    }
+                                },
+                                error = {
 
-                            },
-                            contentDescription = "genderImage",
-                            imageLoader = imageLoader,
-                            contentScale = ContentScale.FillBounds,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(.9f),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.image_error_handle),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+
+                                },
+                                contentDescription = "genderImage",
+                                imageLoader = imageLoader,
+                                contentScale = ContentScale.FillBounds,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                        }
+
+                        Text(
+                            modifier = modifier.width(100.dp),
+                            text = it.name,
+                            style = MaterialTheme.typography.bodySmall,
+                            textAlign = TextAlign.Center
                         )
-
                     }
-
-                    Text(
-                        text = "Occasion", style = MaterialTheme.typography.bodySmall
-                    )
                 }
             }
         }
-
     }
 }
 

@@ -1,12 +1,43 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
+    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.android.library)
 }
 
 android {
-    namespace = "com.vobot.rentals.feature.home"
+    namespace = "com.vobot.rentals"
     compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.vobot.rentals"
+        minSdk = 29
+        //noinspection OldTargetApi
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        compose = true
+    }
 }
 
 kotlin{
@@ -32,15 +63,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.coil.compose)
-
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-
     implementation(libs.koin.android)
-    implementation(libs.koin.androidx.compose)
 
 
-    api(projects.feature.search)
+
+    api(projects.feature.home)
     api(projects.core.data)
     api(projects.core.designsystem)
 

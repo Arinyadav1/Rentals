@@ -22,8 +22,9 @@ dependencyResolutionManagement {
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Rentals"
-include(":app")
+include(":rentals-app")
 include(":feature:home")
 include(":feature:search")
 include(":core:data")
 include(":core:model")
+include(":core:designsystem")

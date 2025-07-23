@@ -28,17 +28,19 @@ class ImagesRepositoryImpl() : ImagesRepository  {
     )
 
     override val occasionData = listOf(
-        Occasion("Pre-Wedding",""),
-        Occasion("Wedding",""),
-        Occasion("Engagements ",""),
-        Occasion("Mehendi",""),
-        Occasion("Haldi",""),
-        Occasion("Reception",""),
-        Occasion("Farewell",""),
-        Occasion("Clubbing",""),
-        Occasion("Professional Meeting",""),
-        Occasion("Internship/Placement Day (Corporate Looks)",""),
 
+        Occasion("Pre-Wedding","https://resourcesmanager.github.io./Images/Occasion/pre-wedding.jpg"),
+        Occasion("Wedding","https://resourcesmanager.github.io./Images/Occasion/wedding.jpg"),
+        Occasion("Engagement","https://resourcesmanager.github.io./Images/Occasion/Engagement.jpg"),
+        Occasion("Mehendi","https://resourcesmanager.github.io./Images/Occasion/mehndi.jpg"),
+        Occasion("Haldi","https://resourcesmanager.github.io./Images/Occasion/haldi.jpg"),
+        Occasion("Reception","https://resourcesmanager.github.io./Images/Occasion/reception.jpg"),
+        Occasion("Clubbing","https://resourcesmanager.github.io./Images/Occasion/Clubbing.jpg"),
+        Occasion("Festival Theme Party","https://resourcesmanager.github.io./Images/Occasion/Festival%20Theme%20Party.jpg"),
+        Occasion("New Year Party","https://resourcesmanager.github.io./Images/Occasion/new%20year.jpg"),
+        Occasion("Farewell","https://resourcesmanager.github.io./Images/Occasion/farewell.jpg"),
+        Occasion("Professional Meeting","https://resourcesmanager.github.io./Images/Occasion/Professional%20Meeting.jpg"),
+        Occasion("Placement Day Corporate Looks","https://resourcesmanager.github.io./Images/Occasion/Placement%20Day%20Corporate%20Looks.jpg"),
         )
 
 }

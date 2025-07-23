@@ -15,5 +15,8 @@ class HomeViewModel(imagesRepositoryImpl: ImagesRepository) : ViewModel() {
     private val _favoriteImageState = MutableStateFlow(imagesRepositoryImpl.favoriteImage)
     val favoriteImageState = _favoriteImageState.asStateFlow()
 
+    private val _occasionState = MutableStateFlow(imagesRepositoryImpl.occasionData)
+    val occasionState = _occasionState.asStateFlow()
+
 
 }

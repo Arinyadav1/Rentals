@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string name="app_name">Rentals</string>
+
+    <!-- bottom bar values -->
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="cart">Cart</string>
+    <string name="calendar">Calendar</string>
+    <string name="profile">Profile</string>
+
+
+
+
+
+    <string name="image_error_handle">Oops! Couldn\'t load image</string>
+
+
+</resources>

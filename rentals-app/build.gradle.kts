@@ -64,10 +64,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.koin.android)
-
+    implementation(libs.androidx.navigation.compose)
 
 
     api(projects.feature.home)
+    api(projects.feature.profile)
+    api(projects.feature.cart)
+    api(projects.feature.calender)
+    api(projects.feature.favorite)
     api(projects.core.data)
     api(projects.core.designsystem)
 

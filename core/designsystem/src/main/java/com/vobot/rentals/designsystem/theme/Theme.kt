@@ -241,7 +241,8 @@ private val highContrastDarkColorScheme = darkColorScheme(
 
 @Composable
 fun RentalsTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+//    isSystemInDarkTheme()
+    darkTheme: Boolean = false,
     contrast: ContrastMode = ContrastMode.STANDARD_CONTRAST,
     content: @Composable() () -> Unit
 ) {

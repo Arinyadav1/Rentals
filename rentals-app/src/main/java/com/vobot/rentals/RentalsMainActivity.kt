@@ -18,5 +18,3 @@ class RentalsMainActivity : ComponentActivity() {
         }
     }
 }
-
-

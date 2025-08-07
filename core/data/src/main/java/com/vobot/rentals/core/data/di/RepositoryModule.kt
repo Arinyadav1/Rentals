@@ -6,9 +6,8 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+val repositoryModule =
+    module {
 
-val repositoryModule = module {
-
-    singleOf(::ImagesRepositoryImpl) { bind<ImagesRepository>() }
-
-}
+        singleOf(::ImagesRepositoryImpl) { bind<ImagesRepository>() }
+    }

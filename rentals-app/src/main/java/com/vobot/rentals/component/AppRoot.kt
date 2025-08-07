@@ -21,9 +21,7 @@ import com.vobot.rentals.navigation.NavGraphRoute
 import com.vobot.rentals.navigation.RootNavHost
 
 @Composable
-fun AppRoot(
-    modifier: Modifier = Modifier
-){
+fun AppRoot(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
     RentalsScaffold(
@@ -31,16 +29,17 @@ fun AppRoot(
         bottomBar = {
             RentalsBottomAppBar(
                 navController = navController,
-                menuItem = listOf(
-                    Destination(NavGraphRoute.HOME, "Home", Icons.Outlined.Home, Icons.Default.Home),
-                    Destination(NavGraphRoute.FAVORITE, "Favorite", Icons.Outlined.FavoriteBorder, Icons.Default.Favorite),
-                    Destination(NavGraphRoute.CART, "Cart", Icons.Outlined.ShoppingCart, Icons.Default.ShoppingCart),
-                    Destination(NavGraphRoute.CALENDER, "Calender", Icons.Outlined.DateRange, Icons.Default.DateRange),
-                    Destination(NavGraphRoute.PROFILE, "Profile", Icons.Outlined.Person, Icons.Default.Person)
-                )
+                menuItem =
+                    listOf(
+                        Destination(NavGraphRoute.HOME, "Home", Icons.Outlined.Home, Icons.Default.Home),
+                        Destination(NavGraphRoute.FAVORITE, "Favorite", Icons.Outlined.FavoriteBorder, Icons.Default.Favorite),
+                        Destination(NavGraphRoute.CART, "Cart", Icons.Outlined.ShoppingCart, Icons.Default.ShoppingCart),
+                        Destination(NavGraphRoute.CALENDER, "Calender", Icons.Outlined.DateRange, Icons.Default.DateRange),
+                        Destination(NavGraphRoute.PROFILE, "Profile", Icons.Outlined.Person, Icons.Default.Person),
+                    ),
             )
-        }
-    ){ paddingValues ->
+        },
+    ) { paddingValues ->
         RootNavHost(
             navController = navController,
         )

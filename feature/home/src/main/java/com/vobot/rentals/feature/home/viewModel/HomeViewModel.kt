@@ -17,6 +17,4 @@ class HomeViewModel(imagesRepositoryImpl: ImagesRepository) : ViewModel() {
 
     private val _occasionState = MutableStateFlow(imagesRepositoryImpl.occasionData)
     val occasionState = _occasionState.asStateFlow()
-
-
 }

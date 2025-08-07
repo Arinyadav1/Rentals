@@ -5,13 +5,11 @@ import com.vobot.rentals.core.model.entity.GenderImage
 import com.vobot.rentals.core.model.entity.Occasion
 
 interface ImagesRepository {
+    val showCarousalImage: List<String>
 
-    val showCarousalImage : List<String>
+    val genderImage: List<GenderImage>
 
-    val genderImage : List<GenderImage>
+    val favoriteImage: List<FavoriteImage>
 
-    val favoriteImage : List<FavoriteImage>
-
-    val occasionData : List<Occasion>
-
+    val occasionData: List<Occasion>
 }

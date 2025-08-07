@@ -1,9 +1,7 @@
 package com.vobot.rentals.designsystem.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
@@ -24,8 +22,7 @@ import coil.request.CachePolicy
 fun RentalsAsyncImage(
     modifier: Modifier = Modifier,
     images: String,
-){
-
+) {
     val context = LocalContext.current
     val imageLoader =
         ImageLoader.Builder(context).crossfade(true).diskCachePolicy(CachePolicy.ENABLED)
@@ -40,12 +37,12 @@ fun RentalsAsyncImage(
                 contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp), strokeWidth = 2.dp
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
                 )
             }
         },
         error = {
-
             Box(
                 modifier = Modifier.fillMaxSize(.9f),
                 contentAlignment = Alignment.Center,
@@ -54,10 +51,9 @@ fun RentalsAsyncImage(
                     imageVector = Icons.Filled.BrokenImage,
                     contentDescription = "Image not loaded",
                     tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(40.dp),
                 )
             }
-
         },
         contentDescription = "image",
         imageLoader = imageLoader,

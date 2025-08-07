@@ -19,7 +19,7 @@ fun RootNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavGraphRoute.HOME
+        startDestination = NavGraphRoute.HOME,
     ) {
         composable(
             route = NavGraphRoute.HOME,

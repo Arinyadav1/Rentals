@@ -25,42 +25,41 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RentalsSearch(modifier : Modifier = Modifier){
-
+fun RentalsSearch(modifier: Modifier = Modifier) {
     val materialColor = MaterialTheme.colorScheme
 
     Box(
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         ElevatedCard(
             modifier
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() }) {}
+                    interactionSource = remember { MutableInteractionSource() },
+                ) {}
                 .fillMaxWidth(.87f)
                 .height(48.dp)
                 .padding(bottom = 10.dp)
                 .border(.0.dp, Color.Gray, CircleShape),
             colors = CardDefaults.cardColors(materialColor.surfaceContainerLowest),
             shape = CircleShape,
-            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)) {
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp),
+        ) {
             Box(
                 Modifier
                     .fillMaxSize()
                     .padding(start = 13.dp),
-                contentAlignment = Alignment.CenterStart
+                contentAlignment = Alignment.CenterStart,
             ) {
                 Row(
                     Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-
                     Icon(
                         Icons.Outlined.Search,
                         contentDescription = "search",
-                        tint = materialColor.onSurface
+                        tint = materialColor.onSurface,
                     )
-
 
                     Box(
                         Modifier
@@ -70,7 +69,7 @@ fun RentalsSearch(modifier : Modifier = Modifier){
                         Text(
                             text = "Search",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = materialColor.onSurface
+                            color = materialColor.onSurface,
                         )
                     }
                 }

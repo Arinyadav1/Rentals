@@ -43,8 +43,10 @@ import kotlin.math.absoluteValue
 @SuppressLint("ConfigurationScreenWidthHeight")
 @RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 @Composable
-internal fun CarouselCard(modifier: Modifier = Modifier, homeViewModel: HomeViewModel) {
-
+internal fun CarouselCard(
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel,
+) {
     val images by homeViewModel.carouselImageState.collectAsState()
 
     val max = Int.MAX_VALUE
@@ -70,46 +72,49 @@ internal fun CarouselCard(modifier: Modifier = Modifier, homeViewModel: HomeView
     val configuration = LocalConfiguration.current
     val isTablet = configuration.screenWidthDp >= 600
 
-
     HorizontalPager(
         modifier = modifier,
         state = pagerState,
         pageSpacing = (-35).dp,
         contentPadding = PaddingValues(start = 30.dp, end = 30.dp, top = 10.dp),
-
-        ) { page ->
+    ) { page ->
 
         ElevatedCard(
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(
-                pressedElevation = 10.dp, defaultElevation = 8.dp
-            ),
+            elevation =
+                CardDefaults.cardElevation(
+                    pressedElevation = 10.dp,
+                    defaultElevation = 8.dp,
+                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth(1f)
+                    .padding(horizontal = 10.dp)
+                    .clickable(
+                        interactionSource = pageInteractionSource,
+                        indication = LocalIndication.current,
+                    ) {}
+                    .graphicsLayer {
+                        val pageOffset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
 
-            modifier = Modifier
-                .fillMaxWidth(1f)
-                .padding(horizontal = 10.dp)
-                .clickable(
-                    interactionSource = pageInteractionSource, indication = LocalIndication.current
-                ) {
-                }
-                .graphicsLayer {
-                    val pageOffset =
-                        ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
-
-                    scaleY = lerp(
-                        start = 0.85f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                    )
-                    scaleX = lerp(
-                        start = 0.85f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                    )
-                    alpha = lerp(
-                        start = 0.4f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                    )
-                },
+                        scaleY =
+                            lerp(
+                                start = 0.85f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f),
+                            )
+                        scaleX =
+                            lerp(
+                                start = 0.85f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f),
+                            )
+                        alpha =
+                            lerp(
+                                start = 0.4f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f),
+                            )
+                    },
         ) {
             RentalsAsyncImage(
                 modifier = Modifier.aspectRatio(if (isTablet) 1280f / 300f else 1280f / 720f),
-                images = images[page % images.size]
+                images = images[page % images.size],
             )
         }
     }
@@ -122,13 +127,18 @@ internal fun CarouselCard(modifier: Modifier = Modifier, homeViewModel: HomeView
     ) {
         repeat(images.size) { iteration ->
             val color =
-                if ((pagerState.currentPage % images.size) == iteration) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.surfaceContainerHighest
+                if ((pagerState.currentPage % images.size) == iteration) {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                } else {
+                    MaterialTheme.colorScheme.surfaceContainerHighest
+                }
             Box(
-                modifier = Modifier
-                    .padding(2.dp)
-                    .clip(CircleShape)
-                    .background(color)
-                    .size(7.dp)
+                modifier =
+                    Modifier
+                        .padding(2.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                        .size(7.dp),
             )
         }
     }

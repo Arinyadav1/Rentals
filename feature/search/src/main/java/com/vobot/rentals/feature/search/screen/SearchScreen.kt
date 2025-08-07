@@ -21,22 +21,20 @@ import androidx.compose.ui.semantics.traversalIndex
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(
-
-    modifier: Modifier = Modifier
-) {
+fun SearchScreen(modifier: Modifier = Modifier) {
     // Controls expansion state of the search bar
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     Box(
         modifier
             .fillMaxSize()
-            .semantics { val isTraversalGroup = true }
+            .semantics { val isTraversalGroup = true },
     ) {
         SearchBar(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .semantics { traversalIndex = 0f },
+            modifier =
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .semantics { traversalIndex = 0f },
             inputField = {
                 SearchBarDefaults.InputField(
                     query = "",
@@ -47,7 +45,7 @@ fun SearchScreen(
                     },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    placeholder = { Text("Search") }
+                    placeholder = { Text("Search") },
                 )
             },
             expanded = expanded,
@@ -55,7 +53,6 @@ fun SearchScreen(
         ) {
             // Display search results in a scrollable column
             Column(Modifier.verticalScroll(rememberScrollState())) {
-
             }
         }
     }

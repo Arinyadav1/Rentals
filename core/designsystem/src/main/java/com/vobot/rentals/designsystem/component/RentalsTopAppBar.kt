@@ -1,6 +1,5 @@
 package com.vobot.rentals.designsystem.component
 
-import android.icu.text.StringSearch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,9 +8,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,18 +34,20 @@ fun RentalsTopAppBar(
     navigationOnClick: () -> Unit = {},
     notificationOnClick: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-        titleContentColor = MaterialTheme.colorScheme.primary,
-        scrolledContainerColor = MaterialTheme.colorScheme.primary
-    ),
+    colors: TopAppBarColors =
+        TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+            scrolledContainerColor = MaterialTheme.colorScheme.primary,
+        ),
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(colors.containerColor),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(colors.containerColor),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         CenterAlignedTopAppBar(
             scrollBehavior = scrollBehavior,
@@ -58,15 +56,14 @@ fun RentalsTopAppBar(
             title = {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Row(
                         Modifier
                             .fillMaxWidth().padding(horizontal = 10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-
                         if (navigationIcon != null) {
                             IconButton(
                                 onClick = { navigationOnClick() },
@@ -74,7 +71,7 @@ fun RentalsTopAppBar(
                                 Icon(
                                     navigationIcon,
                                     contentDescription = "menu",
-                                    tint = MaterialTheme.colorScheme.onPrimary
+                                    tint = MaterialTheme.colorScheme.onPrimary,
                                 )
                             }
                         }
@@ -83,7 +80,7 @@ fun RentalsTopAppBar(
                             Text(
                                 text = title,
                                 style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
 
@@ -92,14 +89,13 @@ fun RentalsTopAppBar(
                                 Icon(
                                     notificationIcon,
                                     contentDescription = "notifications",
-                                    tint = MaterialTheme.colorScheme.onPrimary
-
+                                    tint = MaterialTheme.colorScheme.onPrimary,
                                 )
                             }
                         }
                     }
                 }
-            }
+            },
         )
 
         if (searchBar) {

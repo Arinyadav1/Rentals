@@ -6,5 +6,4 @@ object NavGraphRoute {
     const val CART = "cart"
     const val CALENDER = "calender"
     const val PROFILE = "profile"
-
 }

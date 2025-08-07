@@ -2,7 +2,6 @@ package com.vobot.rentals.feature.calender.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -14,22 +13,20 @@ import com.vobot.rentals.designsystem.component.RentalsTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalenderScreen(){
-
+fun CalenderScreen() {
     RentalsScaffold(
         topBar = {
             RentalsTopAppBar(
                 title = "Rentals",
-                searchBar = true
+                searchBar = true,
             )
-        }
-    ){ paddingValues ->
+        },
+    ) { paddingValues ->
         Box(
             modifier = Modifier.padding(paddingValues).fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ){
+            contentAlignment = Alignment.Center,
+        ) {
             Text(text = "Calender", modifier = Modifier.align(Alignment.Center))
-
         }
     }
 }

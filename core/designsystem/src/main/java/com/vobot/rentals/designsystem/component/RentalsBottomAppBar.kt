@@ -37,8 +37,6 @@ fun RentalsBottomAppBar(
     navController : NavController,
     menuItem : List<Destination>
 ) {
-
-
     var selectedDestination by rememberSaveable { mutableStateOf(menuItem.first().route) }
 
     val interactionSource = remember { MutableInteractionSource() }

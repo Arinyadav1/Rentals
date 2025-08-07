@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RentalsTopAppBar(
     modifier: Modifier = Modifier,
-    title: String,
+    title: String? = null,
     searchBar: Boolean = false,
     navigationIcon: ImageVector? = null,
     notificationIcon: ImageVector? = null,
@@ -79,11 +79,13 @@ fun RentalsTopAppBar(
                             }
                         }
 
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
+                        if (title != null) {
+                            Text(
+                                text = title,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
 
                         if (notificationIcon != null) {
                             IconButton(onClick = { notificationOnClick() }) {

@@ -15,6 +15,8 @@ material = "1.12.0"
 materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.3"
 jetbrainsKotlinJvm = "2.2.0"
+spotlessVersion = "7.2.1"
+
 
 
 [libraries]
@@ -47,4 +49,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotlessVersion" }
 

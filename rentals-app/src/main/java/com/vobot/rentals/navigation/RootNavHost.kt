@@ -1,57 +1,50 @@
 package com.vobot.rentals.navigation
 
-import android.view.Menu
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.vobot.rentals.feature.calender.screen.CalenderScreen
 import com.vobot.rentals.feature.cart.screen.CartScreen
+import com.vobot.rentals.feature.favorite.screen.FavoriteScreen
 import com.vobot.rentals.feature.home.screen.HomeScreen
 import com.vobot.rentals.feature.profile.screen.ProfileScreen
 
 @Composable
-fun MenuBarNavHost(
+fun RootNavHost(
     modifier: Modifier = Modifier,
-    navController : NavHostController,
-){
+    navController: NavHostController,
+) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = MainNavGraphRoute.HOME
+        startDestination = NavGraphRoute.HOME
     ) {
         composable(
-            route = MainNavGraphRoute.HOME,
+            route = NavGraphRoute.HOME,
         ) {
             HomeScreen()
         }
         composable(
-            route = MainNavGraphRoute.PROFILE,
+            route = NavGraphRoute.PROFILE,
         ) {
             ProfileScreen()
         }
         composable(
-            route = MainNavGraphRoute.CART,
+            route = NavGraphRoute.CART,
         ) {
             CartScreen()
         }
         composable(
-            route = MainNavGraphRoute.CALENDER,
+            route = NavGraphRoute.CALENDER,
         ) {
             CalenderScreen()
         }
         composable(
-            route = MainNavGraphRoute.FAVORITE,
+            route = NavGraphRoute.FAVORITE,
         ) {
-
+            FavoriteScreen()
         }
-
-
     }
-
 }

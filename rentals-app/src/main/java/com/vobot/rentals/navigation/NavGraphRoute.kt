@@ -1,7 +1,6 @@
 package com.vobot.rentals.navigation
 
-object MainNavGraphRoute {
-
+object NavGraphRoute {
     const val HOME = "home"
     const val FAVORITE = "favorite"
     const val CART = "cart"

@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 fun RentalsTopAppBar(
     modifier: Modifier = Modifier,
     title: String? = null,
-    searchBar: Boolean = false,
+    searchBar: @Composable () -> Unit = {},
     navigationIcon: ImageVector? = null,
     notificationIcon: ImageVector? = null,
     navigationOnClick: () -> Unit = {},
@@ -97,9 +97,6 @@ fun RentalsTopAppBar(
                 }
             },
         )
-
-        if (searchBar) {
-            RentalsSearch()
-        }
+        searchBar()
     }
 }

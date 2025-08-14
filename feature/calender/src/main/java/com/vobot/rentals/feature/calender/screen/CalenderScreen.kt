@@ -10,15 +10,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.vobot.rentals.designsystem.component.RentalsScaffold
 import com.vobot.rentals.designsystem.component.RentalsTopAppBar
+import com.vobot.rentals.designsystem.component.RentalsTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalenderScreen() {
     RentalsScaffold(
         topBar = {
-            RentalsTopAppBar(
+            RentalsTopBar(
                 title = "Rentals",
-                searchBar = true,
             )
         },
     ) { paddingValues ->
